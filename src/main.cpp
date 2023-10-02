@@ -17,8 +17,12 @@ int main() {
     // dithered.writeJpg("./sample/paris_d.jpg");
 
     // Image img2 = error_diffusion(img, DIFFUSION_KERNEL::FLOYD_STEINBERG, 127);
-    Image img2 = error_diffusion(img, DIFFUSION_KERNEL::JARVIS_JUDICE_NINKE, 127);
+    // Image img2 = error_diffusion(img, DIFFUSION_KERNEL::JARVIS_JUDICE_NINKE, 127);
     // Image img2 = error_diffusion(gray, DIFFUSION_KERNEL::STUCKI, 127);
+
+    // Image img2 = mbvq_error_diffusion(img, DIFFUSION_KERNEL::FLOYD_STEINBERG);
+    Image img2 = error_diffusion(img, DIFFUSION_KERNEL::JARVIS_JUDICE_NINKE, true);
+
 
     img2.writeJpg("./sample/tiger_error.jpg");
 
