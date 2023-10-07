@@ -6,19 +6,19 @@
 #include <vector>
 
 typedef unsigned char BYTE;
+typedef unsigned int uint;
 typedef std::vector<std::vector<std::vector<BYTE>>> CRATE;
 
 class Image {
 private:
-  unsigned int _width, _height, _channels;
+  uint _width, _height, _channels;
   CRATE _crate;
-
   void _normalize();
   void _denormalize();
 
 public:
   Image() {}
-  Image(unsigned int width, unsigned int height, unsigned int channels) {
+  Image(uint width, uint height, uint channels) {
     this->_width = width;
     this->_height = height;
     this->_channels = channels;
@@ -38,11 +38,11 @@ public:
   Image operator-(const int &rhs);
   Image operator-=(const int &rhs);
   Image operator*(const int &rhs);
-  unsigned int width();
-  unsigned int height();
-  unsigned int channels();
-  BYTE get(unsigned int i, unsigned int j, unsigned int k);
-  void set(unsigned int i, unsigned int j, unsigned int k, BYTE val);
+  uint width();
+  uint height();
+  uint channels();
+  BYTE get(uint i, uint j, uint k);
+  void set(uint i, uint j, uint k, BYTE val);
   int max();
   int min();
   void readJpg(const std::string &filename);

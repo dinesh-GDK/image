@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+typedef unsigned int uint;
+
 Image Image::like() {
   Image new_image = Image(this->_width, this->_height, this->_channels);
   return new_image;
@@ -104,24 +106,22 @@ int Image::max() {
   return res;
 }
 
-unsigned int Image::width() { return this->_width; }
+uint Image::width() { return this->_width; }
 
-unsigned int Image::height() { return this->_height; }
+uint Image::height() { return this->_height; }
 
-unsigned int Image::channels() { return this->_channels; }
+uint Image::channels() { return this->_channels; }
 
-BYTE Image::get(unsigned int i, unsigned int j, unsigned int k) {
-  return this->_crate[i][j][k];
-}
+BYTE Image::get(uint i, uint j, uint k) { return this->_crate[i][j][k]; }
 
-void Image::set(unsigned int i, unsigned int j, unsigned int k, BYTE val) {
+void Image::set(uint i, uint j, uint k, BYTE val) {
   this->_crate[i][j][k] = val;
 }
 
 void Image::readJpg(const std::string &filename) {
   FILE *file = fopen(filename.c_str(), "rb");
   if (!file) {
-    std::cerr << "Error: Could not open file " << filename << std::endl;
+    std::cerr << "[Error] Could not open file " << filename << std::endl;
     return;
   }
   struct jpeg_decompress_struct cinfo;
@@ -144,7 +144,6 @@ void Image::readJpg(const std::string &filename) {
   jpeg_finish_decompress(&cinfo);
   jpeg_destroy_decompress(&cinfo);
   fclose(file);
-
   this->_crate.resize(this->_height);
   for (int i = 0; i < this->_height; i++) {
     this->_crate[i].resize(this->_width);
@@ -162,10 +161,9 @@ void Image::writeJpg(const std::string &filename, int quality) {
   // this->_normalize();
   FILE *file = fopen(filename.c_str(), "wb");
   if (!file) {
-    std::cerr << "Error: Could not open file " << filename << std::endl;
+    std::cerr << "[Error] Could not open file " << filename << std::endl;
     return;
   }
-
   if (this->channels() == 1) {
     this->_channels = 3;
     for (int i = 0; i < this->_height; i++) {
@@ -177,7 +175,6 @@ void Image::writeJpg(const std::string &filename, int quality) {
       }
     }
   }
-
   struct jpeg_compress_struct cinfo;
   struct jpeg_error_mgr jerr;
   cinfo.err = jpeg_std_error(&jerr);
@@ -212,7 +209,6 @@ void Image::writeJpg(const std::string &filename, int quality) {
 
 Image Image::rgb_2_gray() {
   Image grayscale = Image(this->width(), this->height(), 1);
-
   // Y = (0.257 * R) + (0.504 * G) + (0.098 * B) + 16
   for (int i = 0; i < this->height(); i++) {
     for (int j = 0; j < this->width(); j++) {
@@ -221,6 +217,5 @@ Image Image::rgb_2_gray() {
                         0.098 * this->get(i, j, 2) + 16);
     }
   }
-
   return grayscale;
 }
