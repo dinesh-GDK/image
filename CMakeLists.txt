@@ -12,4 +12,4 @@ add_executable(image_print src/main.cpp src/Image.cpp src/dithering.cpp src/erro
 set(CMAKE_BINARY_DIR ${PROJECT_SOURCE_DIR}/build)
 
 # Link the main executable to the error_diffusion and dithering modules
-target_link_libraries(image_print -ljpeg)
+target_link_libraries(image_print -ljpeg -lboost_program_options)

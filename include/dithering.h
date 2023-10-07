@@ -44,7 +44,6 @@ mCRATE threshold_matrix(mCRATE dithering_matrix) {
 }
 
 Image dithering(Image image, unsigned int dim) {
-  assert(image.channels() == 1);
   mCRATE dithering = dithering_matrix(dim);
   mCRATE threshold = threshold_matrix(dithering);
 
