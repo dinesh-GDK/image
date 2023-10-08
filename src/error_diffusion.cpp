@@ -10,6 +10,7 @@ typedef std::vector<std::vector<double>> VECTOR_DOUBLE_2D;
 typedef std::vector<VECTOR_DOUBLE_2D> VECTOR_DOUBLE_3D;
 typedef std::vector<BYTE> VECTOR_BYTE;
 
+// Map containing the diffusion kernel matrices for various algorithms
 std::map<DIFFUSION_KERNEL, VECTOR_DOUBLE_2D> DIFFUSION_KERNELS = {
     {DIFFUSION_KERNEL::FLOYD_STEINBERG,
      {{0. / 16, 0. / 16, 0. / 16},
@@ -60,6 +61,15 @@ std::map<DIFFUSION_KERNEL, VECTOR_DOUBLE_2D> DIFFUSION_KERNELS = {
           1. / 42,
       }}}};
 
+/**
+ * @brief Finds the nearest vertex for given RGB values based on a specific MBVQ type.
+ * 
+ * @param mbvq The MBVQ type for vertex quantization.
+ * @param R Red component of the color.
+ * @param G Green component of the color.
+ * @param B Blue component of the color.
+ * @return COLOR The nearest vertex color.
+ */
 COLOR get_nearest_vertex(const MBVQ mbvq, const float R, const float G,
                          const float B) {
   COLOR vertex;
@@ -223,6 +233,14 @@ COLOR get_nearest_vertex(const MBVQ mbvq, const float R, const float G,
   return vertex;
 }
 
+/**
+ * @brief Determines the MBVQ type based on the given RGB values.
+ * 
+ * @param R Red component of the color.
+ * @param G Green component of the color.
+ * @param B Blue component of the color.
+ * @return MBVQ The MBVQ type corresponding to the RGB values.
+ */
 MBVQ get_mbvq(BYTE R, BYTE G, BYTE B) {
   MBVQ res;
   if (R + G > 255) {
@@ -249,6 +267,15 @@ MBVQ get_mbvq(BYTE R, BYTE G, BYTE B) {
   return res;
 }
 
+/**
+ * @brief Retrieves the color for a specific pixel in the 3D matrix based on a threshold.
+ * 
+ * @param ip_crate 3D matrix containing color data.
+ * @param x X-coordinate of the pixel.
+ * @param y Y-coordinate of the pixel.
+ * @param threshold Threshold for deciding pixel color.
+ * @return VECTOR_BYTE Vector containing the RGB values for the pixel.
+ */
 VECTOR_BYTE get_color(VECTOR_DOUBLE_3D &ip_crate, uint x, uint y,
                       double threshold) {
   VECTOR_BYTE color(ip_crate[0][0].size());
@@ -258,6 +285,14 @@ VECTOR_BYTE get_color(VECTOR_DOUBLE_3D &ip_crate, uint x, uint y,
   return color;
 }
 
+/**
+ * @brief Retrieves the color for a specific pixel in the 3D matrix based on MBVQ technique.
+ * 
+ * @param ip_crate 3D matrix containing color data.
+ * @param x X-coordinate of the pixel.
+ * @param y Y-coordinate of the pixel.
+ * @return VECTOR_BYTE Vector containing the RGB values for the pixel.
+ */
 VECTOR_BYTE get_mbvq_color(const VECTOR_DOUBLE_3D &ip_crate, uint x, uint y) {
   const MBVQ mbvq =
       get_mbvq(ip_crate[x][y][0], ip_crate[x][y][1], ip_crate[x][y][2]);
@@ -284,6 +319,12 @@ VECTOR_BYTE get_mbvq_color(const VECTOR_DOUBLE_3D &ip_crate, uint x, uint y) {
   return {R, G, B};
 }
 
+/**
+ * @brief Flips the 2D kernel matrix horizontally (left-to-right).
+ * 
+ * @param kernel 2D matrix representing the kernel.
+ * @return VECTOR_DOUBLE_2D Flipped kernel.
+ */
 VECTOR_DOUBLE_2D fliplr(VECTOR_DOUBLE_2D kernel) {
   assert(kernel.size() == kernel[0].size() && kernel.size() % 2 == 1);
   const size_t rows = kernel.size(), cols = kernel[0].size();
@@ -295,6 +336,15 @@ VECTOR_DOUBLE_2D fliplr(VECTOR_DOUBLE_2D kernel) {
   return kernel;
 }
 
+/**
+ * @brief Performs error diffusion on the provided image.
+ * 
+ * @param image Image to be processed.
+ * @param kernel_type Type of diffusion kernel to be used.
+ * @param isMBVQ Flag to determine if MBVQ technique is used.
+ * @param threshold Threshold for the error diffusion.
+ * @return Image Processed image after error diffusion.
+ */
 Image error_diffusion(Image image, DIFFUSION_KERNEL kernel_type,
                       bool isMBVQ = false, double threshold = 127.) {
   assert(isMBVQ && image.channels() == 3 || !isMBVQ);
@@ -315,6 +365,9 @@ Image error_diffusion(Image image, DIFFUSION_KERNEL kernel_type,
     size_t begin, end;
     int inc;
     VECTOR_DOUBLE_2D curr_kernel;
+    // error-diffusion is like concolution but changes direction
+    // eg. for the first row it moves from right to left (flipped kernel)
+    // and for the next row it moves from left to right (non-flipped kernel)
     if (x % 2 == 0) {
       begin = image.width() - 1;
       end = 0;

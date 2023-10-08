@@ -11,10 +11,22 @@ typedef unsigned int unit;
 
 namespace po = boost::program_options;
 
+/**
+ * Outputs error messages to the standard error stream.
+ * @param error: Error message to be displayed.
+ * @param log_level: The logging level of the error (default: "ERROR").
+ */
 void cerr(const std::string &error, const std::string log_level = "ERROR") {
   std::cerr << "[" + log_level + "] " + error << std::endl;
 }
 
+/**
+ * Validates given arguments against allowed values.
+ * @param type: Argument type/name.
+ * @param value: Value of the argument to be validated.
+ * @param allowed: A vector containing the allowed values.
+ * @throws std::invalid_argument if the argument value is not in the allowed list.
+ */
 void validate_argument(const std::string &type, const uint &value,
                        const std::vector<uint> &allowed) {
   std::string error = "Invalid argument for " + type + "; Allowed values: | ";
@@ -27,7 +39,14 @@ void validate_argument(const std::string &type, const uint &value,
   throw std::invalid_argument(error);
 }
 
-bool parse_arguments(int argc, char **argv, po::variables_map &vm,
+/**
+ * Parses command-line arguments.
+ * @param argc: Argument count.
+ * @param argv: Argument vector.
+ * @param vm: Variables map to store parsed arguments.
+ * @param desc: Description of allowed options.
+ */
+void parse_arguments(int argc, char **argv, po::variables_map &vm,
                      po::options_description &desc) {
   desc.add_options()("help", "help message")("input", po::value<std::string>(),
                                              "input image path (only jpg)")(
@@ -43,43 +62,38 @@ bool parse_arguments(int argc, char **argv, po::variables_map &vm,
       "threshold for ERROR_DIFFUSION (default 127)")(
       "mbvq", po::value<bool>(),
       "use MBVQ technique for ERROR_DIFFUSION (default 0)");
-  bool status = true;
   try {
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
   } catch (const std::exception &e) {
-    cerr(e.what());
-    status = false;
+    throw std::invalid_argument(e.what());
   }
-  return status;
 }
 
 int main(int argc, char *argv[]) {
-  // read CLI
-  po::variables_map vm;
-  po::options_description desc("Allowed options");
-  if (!parse_arguments(argc, argv, vm, desc)) {
-    return 1;
-  }
-  // help
-  if (vm.count("help")) {
-    std::cout << desc << std::endl;
-    std::cout << "Sample usage" << std::endl;
-    std::string usage;
-    usage = "./image_print --input=<input-image-path> "
-            "--output=<output-image-path> --op=ERROR_DIFFUSION "
-            "--kernel=FLOYD_STEINBERG --threshold=127 --mbvq=1 --bw=1";
-    std::cout << usage << std::endl;
-    usage = "./image_print --input=<input-image-path> "
-            "--output=<output-image-path> --op=DITHERING --size=16 --bw=1";
-    std::cout << usage << std::endl;
-    return 0;
-  }
   try {
+    // parse CLI arguments
+    po::variables_map vm;
+    po::options_description desc("Allowed options");
+    parse_arguments(argc, argv, vm, desc);
+    // help
+    if (vm.count("help")) {
+      std::cout << desc << std::endl;
+      std::cout << "Sample usage" << std::endl;
+      std::string usage;
+      usage = "./image_print --input=<input-image-path> "
+              "--output=<output-image-path> --op=ERROR_DIFFUSION "
+              "--kernel=FLOYD_STEINBERG --threshold=127 --mbvq=1 --bw=1";
+      std::cout << usage << std::endl;
+      usage = "./image_print --input=<input-image-path> "
+              "--output=<output-image-path> --op=DITHERING --size=16 --bw=1";
+      std::cout << usage << std::endl;
+      return 0;
+    }
     // validate necessary arguments
     if (!vm.count("input") || !vm.count("output") || !vm.count("op")) {
-      cerr("Arguments `input`, `output` and `op` are required");
-      return 1;
+      throw std::invalid_argument(
+          "Arguments `input`, `output` and `op` are required");
     }
     std::string input_file = vm["input"].as<std::string>();
     std::string output_file = vm["output"].as<std::string>();
@@ -96,7 +110,7 @@ int main(int argc, char *argv[]) {
     // process operations
     if (op == 1) {
       uint size = vm.count("size") ? vm["size"].as<uint>() : 8;
-      // check if size is in power of 2
+      // check if dimension of the dithering matrix is in power of 2
       if (!(size > 0 && (size & (size - 1)) == 0)) {
         cerr("Invalid value for argument `size`; Should be in powers of 2");
         return 1;

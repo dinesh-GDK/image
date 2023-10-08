@@ -7,11 +7,33 @@
 
 typedef unsigned int uint;
 
+/** 
+ * @brief Default constructor.
+ */
+Image::Image(uint width, uint height, uint channels) {
+  this->_width = width;
+  this->_height = height;
+  this->_channels = channels;
+  this->_crate.resize(height);
+  for (int i = 0; i < height; i++) {
+    this->_crate[i].resize(width);
+    for (int j = 0; j < width; j++) {
+      this->_crate[i][j].resize(channels);
+    }
+  }
+}
+
+/**
+ * @brief Creates a new image with the same dimensions but without data.
+ */
 Image Image::like() {
   Image new_image = Image(this->_width, this->_height, this->_channels);
   return new_image;
 }
 
+/**
+ * @brief Assignment operator.
+ */
 Image &Image::operator=(const Image &rhs) {
   this->_width = rhs._width;
   this->_height = rhs._height;
@@ -20,6 +42,9 @@ Image &Image::operator=(const Image &rhs) {
   return *this;
 }
 
+/**
+ * @brief Addition operator to add two images.
+ */
 Image Image::operator+(const Image &rhs) {
   assert(this->_width == rhs._width && this->_height == rhs._height &&
          this->_channels == rhs._channels);
@@ -40,6 +65,9 @@ Image Image::operator+(const Image &rhs) {
   return result;
 }
 
+/**
+ * @brief Addition operator to add a constant value to an image.
+ */
 Image Image::operator+(const int &rhs) {
   Image result;
   result._width = this->_width;
@@ -58,12 +86,24 @@ Image Image::operator+(const int &rhs) {
   return result;
 }
 
+/**
+ * @brief Addition assignment operator.
+ */
 Image Image::operator+=(const int &rhs) { return *this = *this + rhs; }
 
+/**
+ * @brief Subtraction operator to subtract two images.
+ */
 Image Image::operator-(const int &rhs) { return *this = *this + (-rhs); }
 
+/**
+ * @brief Subtraction assignment operator.
+ */
 Image Image::operator-=(const int &rhs) { return *this = *this - rhs; }
 
+/**
+ * @brief Multiplication operator to multiply image with a constant.
+ */
 Image Image::operator*(const int &rhs) {
   Image result;
   result._width = this->_width;
@@ -82,6 +122,9 @@ Image Image::operator*(const int &rhs) {
   return result;
 }
 
+/**
+ * @brief Finds the minimum value in the image data.
+ */
 int Image::min() {
   BYTE res = 255;
   for (int i = 0; i < this->_height; i++) {
@@ -94,6 +137,9 @@ int Image::min() {
   return res;
 }
 
+/**
+ * @brief Finds the maximum value in the image data.
+ */
 int Image::max() {
   BYTE res = 0;
   for (int i = 0; i < this->_height; i++) {
@@ -106,18 +152,44 @@ int Image::max() {
   return res;
 }
 
+/**
+ * @brief Returns the width of the image.
+ */
 uint Image::width() { return this->_width; }
 
+/**
+ * @brief Returns the height of the image.
+ */
 uint Image::height() { return this->_height; }
 
+/**
+ * @brief Returns the number of channels of the image.
+ */
 uint Image::channels() { return this->_channels; }
 
+/**
+ * @brief Gets the value at a specific location in the image matrix.
+ * @param i Row index.
+ * @param j Column index.
+ * @param k Channel index.
+ */
 BYTE Image::get(uint i, uint j, uint k) { return this->_crate[i][j][k]; }
 
+/**
+ * @brief Sets a value at a specific location in the image matrix.
+ * @param i Row index.
+ * @param j Column index.
+ * @param k Channel index.
+ * @param val Value to be set.
+ */
 void Image::set(uint i, uint j, uint k, BYTE val) {
   this->_crate[i][j][k] = val;
 }
 
+/**
+ * @brief Reads a JPG image from the specified file path.
+ * @param filename Path to the JPG image.
+ */
 void Image::readJpg(const std::string &filename) {
   FILE *file = fopen(filename.c_str(), "rb");
   if (!file) {
@@ -157,8 +229,12 @@ void Image::readJpg(const std::string &filename) {
   }
 }
 
+/**
+ * @brief Writes the image data to a JPG file.
+ * @param filename Path to save the JPG image.
+ * @param quality Quality of the saved JPG image (default is 75).
+ */
 void Image::writeJpg(const std::string &filename, int quality) {
-  // this->_normalize();
   FILE *file = fopen(filename.c_str(), "wb");
   if (!file) {
     std::cerr << "[Error] Could not open file " << filename << std::endl;
@@ -207,6 +283,9 @@ void Image::writeJpg(const std::string &filename, int quality) {
   fclose(file);
 }
 
+/**
+ * @brief Converts a RGB image to grayscale.
+ */
 Image Image::rgb_2_gray() {
   Image grayscale = Image(this->width(), this->height(), 1);
   // Y = (0.257 * R) + (0.504 * G) + (0.098 * B) + 16
