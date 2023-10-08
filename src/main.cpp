@@ -57,7 +57,7 @@ void parse_arguments(int argc, char **argv, po::variables_map &vm,
       "size", po::value<uint>(),
       "dimension of dithering matrix for DITHERING (default 8)")(
       "kernel", po::value<uint>(),
-      "FLOYD_STEINBERG=1 / JARVIS_JUDICE_NINKE=2 / STUCKI=3 (default 1)")(
+      "FLOYD_STEINBERG=1 / JARVIS_JUDICE_NINKE=2 / STUCKI=3 (default 2)")(
       "threshold", po::value<uint>(),
       "threshold for ERROR_DIFFUSION (default 127)")(
       "mbvq", po::value<bool>(),
@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
       }
       image = dithering(image, size);
     } else {
-      uint kernel_idx = vm.count("kernel") ? vm["kernel"].as<uint>() : 1;
+      uint kernel_idx = vm.count("kernel") ? vm["kernel"].as<uint>() : 2;
       uint threshold = vm.count("threshold") ? vm["threshold"].as<uint>() : 127;
       bool is_mbvq = vm.count("mbvq") && vm["mbvq"].as<bool>() ? true : false;
       validate_argument("kernel", kernel_idx, {1, 2, 3});
