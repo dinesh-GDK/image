@@ -365,7 +365,7 @@ Image error_diffusion(Image image, DIFFUSION_KERNEL kernel_type,
     size_t begin, end;
     int inc;
     VECTOR_DOUBLE_2D curr_kernel;
-    // error-diffusion is like concolution but changes direction
+    // error-diffusion is like convolution but changes direction
     // eg. for the first row it moves from right to left (flipped kernel)
     // and for the next row it moves from left to right (non-flipped kernel)
     if (x % 2 == 0) {
