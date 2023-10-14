@@ -25,7 +25,7 @@ def main():
     for i in range(2):
         for j in range(3):
             ax[i, j].imshow(Image.open(all_paths[i*3+j]))
-            ax[i, j].set_xlabel(f"({i*3+j+1})", fontsize=100)
+            ax[i, j].set_xlabel(f"({i*3+j+1})", fontsize=150)
 
     plt.tight_layout()
     plt.savefig("assests/demo_image.jpg", bbox_inches="tight")
