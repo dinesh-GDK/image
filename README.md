@@ -7,7 +7,7 @@ Discover the world of image conversion with our JPEG to Printable Image Converte
 Whether you're seeking precision with **Dithering** and **Error Diffusion** or looking to master kernels like *FLOYD STEINBERG*, *JARVIS JUDICE NINKE*, *STUCKI*, our converter has you covered. These algorithms are used to convert images such that we can print them on paper media.
 
 <p align="center">
-  <img src="assests/demo_image.jpg" width="60%" height="auto"></img>
+  <img src="assests/demo_image.jpg" width="75%" height="auto"></img>
   <p align="center">Fig 1. (1) original image (2) Dithered image using 16x16 kernel (3) Error diffused image using STUCKI kernel and threshold as 127
   (4) Error diffused image using STUCKI kernel, threshold as 127 and using MBVQ (5) Dithered b/w image using 16x16 kernel (6) Error diffused image using STUCKI kernel and threshold as 127</p>
 </p>
