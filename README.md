@@ -17,8 +17,7 @@ Whether you're seeking precision with **Dithering** and **Error Diffusion** or l
 You need to install the following dependancies
 
 ```bash
-sudo apt-get install libjpeg-dev
-sudo apt-get install libboost-all-dev
+sudo apt-get install cmake libjpeg-dev libboost-all-dev
 ```
 
 ```bash
