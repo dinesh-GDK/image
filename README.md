@@ -27,6 +27,7 @@ cmake . && make
 ```
 
 ## Usage
+Only `JPEG` images are supported
 ```bash
 ./image_print [options]
 ```
