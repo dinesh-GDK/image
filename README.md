@@ -1,10 +1,10 @@
 # 🖨️ print_image
 
-## 🎨 Transform Digital Images into Beautiful Print-Ready Artwork! 📄
+## 🎨 Transform Images into Beautiful Print-Like Artwork! 📄
 
-Discover the world of image conversion with our JPEG to Printable Image Converter. This C++ command-line tool harnesses the power of advanced algorithms to seamlessly convert your digital images into stunning, paper-ready artwork. Dive into the realm of print perfection and bring your digital creations to life on paper! 🖼️🖨️
+Discover the world of image conversion with JPEG to Printable Image Converter. This C++ command-line tool harnesses the power of image processing algorithms to convert your images into stunning, paper-like artwork seamlessly. 🖼️🖨️
 
-Whether you're seeking precision with **Dithering** and **Error Diffusion** or looking to master kernels like *FLOYD STEINBERG*, *JARVIS JUDICE NINKE*, *STUCKI*, our converter has you covered. These algorithms are used to convert images such that we can print them on paper media.
+Whether you're seeking precision with **Dithering** and **Error Diffusion** or looking to master kernels like *FLOYD STEINBERG*, *JARVIS JUDICE NINKE*, *STUCKI*, this converter has you covered.
 
 <p align="center">
   <img src="assests/demo_image.jpg" width="75%" height="auto"></img>
